@@ -1,0 +1,2 @@
+# ignorance
+Be fool
