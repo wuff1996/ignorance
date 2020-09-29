@@ -74,11 +74,11 @@ https://github.com/wuff1996/ignorance/tree/master/Go/problem
 
  		大程序都是从小的基本组件构建而来的：变量存储值；简单表达式通过加和减合并成大的；基本类型通过数组和结构体进行聚合；表达式通过if、else if、else、for、switch、select控制语句来决定执行顺序；语句被组织成函数用于隔离和复用；函数被组织成源文件按和包。
 
-1**.名称**严格区分大小写。//**[a-zA-Z]\w***     
+1.**名称**严格区分大小写。//**[a-zA-Z]\w***     
 
 2.**关键字**只能在语法中使用，**不能作为名称**，关键字如下：**break,default,func,interface,select,case,defer,go,map,struct,const,fallthrough,if,range,type,continue,for,import,return,var**.     
 
-3**.程序实体的第一个字母大小写决定其可见性是否跨包**，即是否可被外界可见，可访问，可引用。但包本身由小写字母表示。 
+3.**程序实体的第一个字母大小写决定其可见性是否跨包**，即是否可被外界可见，可访问，可引用。但包本身由小写字母表示。 
 
 4.**声明**：给一个程序实体命名，设定其部分或全部属性。。有四个主要的声明：var, const, type, func.
 
@@ -114,7 +114,7 @@ func R2()(int,string){
 
 **指针和引用的区别**：https://www.tutorialspoint.com/what-is-difference-between-a-pointer-and-reference-parameter-in-cplusplus
 
-7**.new**:new(T)分配一块类型为T的内存空间，并返回其地址，使得变量不需要变量名，指针可以 初始化任何类型的零值。
+7.**new**:new(T)分配一块类型为T的内存空间，并返回其地址，使得变量不需要变量名，指针可以 初始化任何类型的零值。
 
 **make**： make(T)，创建一个未命名的T类型，并进行初始化，T类型只能为slice、map、channel，并返回其引用。
 
