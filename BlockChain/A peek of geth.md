@@ -265,7 +265,7 @@ Now that we are interactive with the node,let's do something within current bloc
 eth.accounts
 ```
 
-![img](C:\Users\Administrator\Desktop\love\ignorance\Blockchain\wps1.jpg)
+![img](https://github.com/wuff1996/ignorance/BlockChain/wps1.jpg)
 
 As I have created some accounts so It looks like this,Now let’s create a new account with man-readable password.
 
