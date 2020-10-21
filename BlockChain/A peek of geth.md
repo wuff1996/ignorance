@@ -450,7 +450,7 @@ So let’s see the balance of an account:
 web3.fromWei(eth.getBalance(eth.accounts[0]),"ether")
 ```
 
-![result](wps4.jpg)
+![result](wps4.png)
 Because I have mined before , so it shows that first account of this node have 766 ether.
 
 Let’s figure out what works this out:
