@@ -265,7 +265,7 @@ Now that we are interactive with the node,let's do something within current bloc
 eth.accounts
 ```
 
-![img](https://github.com/wuff1996/ignorance/BlockChain/wps1.jpg)
+![img](wps1.jpg)
 
 As I have created some accounts so It looks like this,Now let’s create a new account with man-readable password.
 
@@ -412,7 +412,7 @@ UTC--<created_at UTC ISO8601>-<address hex>
 
 ##### 4:add the account created before to the cache and refresh the wallet. Then returns the account’s address and it’s path to us in console.
 
-![img](C:\Users\Administrator\Desktop\love\ignorance\Blockchain\wps2.jpg)
+![img](wps2.jpg)
 
 So let’s put
 
@@ -422,7 +422,7 @@ So let’s put
 
 And console shows that:
 
-![img](C:\Users\Administrator\Desktop\love\ignorance\Blockchain\wps3.jpg)
+![img](wps3.jpg)
 
 Great! Let’s take a look of what happened this time:
 
@@ -450,7 +450,7 @@ So let’s see the balance of an account:
 web3.fromWei(eth.getBalance(eth.accounts[0]),"ether")
 ```
 
-![result](wps4.jpg)
+![img](wps4.png)
 Because I have mined before , so it shows that first account of this node have 766 ether.
 
 Let’s figure out what works this out:
