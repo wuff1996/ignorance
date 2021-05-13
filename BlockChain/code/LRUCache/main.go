@@ -19,12 +19,16 @@ func main() {
 	lru.Put(5435, 34)
 	lru.Put(9, 3)
 	lru.Get(3)
+	lru.Put(3, 66)
 	fmt.Println(lru.Get(3))
-	fmt.Println(lru.header.before.before.before.key)
+	fmt.Println(lru.Get(3))
+	fmt.Println(lru.Get(3))
+
+	fmt.Println(lru.header.before.before.before.value)
 	fmt.Println(lru.kvMap)
 	h := lru.header
 	for i := 0; i < len(lru.kvMap); i++ {
-		fmt.Printf("%8d", h.key)
+		fmt.Printf("value: %8d", h.key)
 		h = h.after
 	}
 
@@ -33,7 +37,7 @@ func main() {
 //this is a node that has its cap, map, header (which used to update the least recently used data and locate the tail of the node)
 type LRUCache struct {
 	capacity int
-	kvMap    map[int]int
+	kvMap    map[int]*Link
 	//Link
 	header *Link
 }
@@ -42,6 +46,7 @@ type LRUCache struct {
 type Link struct {
 	after  *Link
 	before *Link
+	value  int
 	key    int
 }
 
@@ -49,97 +54,88 @@ type Link struct {
 func Constructor(capacity int) LRUCache {
 	l := &LRUCache{
 		capacity: capacity,
-		kvMap:    make(map[int]int),
+		kvMap:    make(map[int]*Link),
 	}
 	return *l
 }
 
+func (this *LRUCache) updateHead(head *Link) {
+	this.header = head
+}
+
+func (l *Link) suicide() {
+	if l == nil {
+		return
+	}
+	head, tail := l.before, l.after
+	head.after, tail.before = tail, head
+	l.after, l.before = nil, nil
+}
+
+func (l *Link) addBefore(n *Link) {
+	if l == nil || n == nil || l == n {
+		return
+	}
+	head := n.before
+	head.after = l
+	l.before, l.after = head, n
+	n.before = l
+}
+
+func (l *Link) addToHead(head *Link) *Link {
+	if l == head {
+		return l
+	}
+	l.suicide()
+	l.addBefore(head)
+	return l
+}
+
 //To find a specific key
 func (this *LRUCache) Get(key int) int {
-	if v, ok := this.kvMap[key]; ok {
-		if key == this.header.key {
-			this.header = this.header.after
-			return v
-		} else if key == this.header.before.key {
-			return v
-		}
-		after := this.header
-		for i := 0; i < len(this.kvMap); i++ {
-			if after.key == key {
-				after.before.after = after.after
-				after.after.before = after.before
-				break
-			}
-			after = after.after
-		}
-		tail := this.header.before
-		entry := &Link{key: key}
-		entry.before = tail
-		entry.after = this.header
-		tail.after = entry
-		this.header.before = entry
-		return v
+	if link, ok := this.kvMap[key]; ok {
+		header := link.addToHead(this.header)
+		this.updateHead(header)
+		return link.value
 	}
 	return -1
 }
 
 //To add a Cache to the LRUCache
 func (this *LRUCache) Put(key int, value int) {
-	if _, ok := this.kvMap[key]; ok {
-		if this.header.key == key {
-			this.header = this.header.after
-			this.kvMap[key] = value
-			return
-		}
-		if this.header.before.key == key {
-			this.kvMap[key] = value
-			return
-		}
-		after := this.header
-		for i := 0; i < this.capacity; i++ {
-			if after.key == key {
-				after.before.after = after.after
-				after.after.before = after.before
-				break
-			}
-			after = after.after
-		}
-		tail := this.header.before
-		entry := &Link{key: key}
-		tail.after = entry
-		entry.after = this.header
-		entry.before = tail
-		this.header.before = entry
-		this.kvMap[key] = value
+	if this.header == nil {
+		link := &Link{value: value, key: key}
+		link.before, link.after = link, link
+		this.updateHead(link)
+		this.kvMap[key] = link
 		return
-	} else {
-		if len(this.kvMap) == 0 {
-			this.header = &Link{key: key}
-			this.header.after = this.header
-			this.header.before = this.header
-			this.kvMap[key] = value
-			return
-		}
-		if this.capacity > len(this.kvMap) {
-			tail := this.header.before
-			entry := &Link{key: key}
-			tail.after = entry
-			entry.after = this.header
-			entry.before = tail
-			this.header.before = entry
-			this.kvMap[key] = value
-			return
-		} else {
-			delete(this.kvMap, this.header.key)
-			this.kvMap[key] = value
-			entry := &Link{key: key}
-			tail := this.header.before
-			this.header = this.header.after
-			this.header.before = entry
-			entry.after = this.header
-			entry.before = tail
-			tail.after = entry
-			return
-		}
 	}
+	if link, ok := this.kvMap[key]; ok {
+		link.value = value
+		header := link.addToHead(this.header)
+		this.updateHead(header)
+		return
+	}
+	if this.capacity > len(this.kvMap) {
+		link := &Link{value: value, key: key}
+		link.addBefore(this.header)
+		this.updateHead(link)
+		this.kvMap[key] = link
+		return
+	}
+
+	delete(this.kvMap, this.header.before.key)
+	link := &Link{value: value, key: key}
+	if this.header==this.header.before{
+		link.before, link.after = link, link
+		this.updateHead(link)
+		this.kvMap[key] = link
+		return
+	}
+	this.header.before.suicide()
+	link.addBefore(this.header)
+	this.updateHead(link)
+	this.kvMap[key] = link
+	return
+
 }
