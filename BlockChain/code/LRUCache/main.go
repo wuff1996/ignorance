@@ -93,7 +93,7 @@ func (l *Link) addToHead(head *Link) *Link {
 
 //To find a specific key
 func (this *LRUCache) Get(key int) int {
-	if link, ok := this.kvMap[key]; ok {
+	if link := this.kvMap[key]; link != nil {
 		header := link.addToHead(this.header)
 		this.updateHead(header)
 		return link.value
@@ -110,7 +110,7 @@ func (this *LRUCache) Put(key int, value int) {
 		this.kvMap[key] = link
 		return
 	}
-	if link, ok := this.kvMap[key]; ok {
+	if link := this.kvMap[key]; link != nil {
 		link.value = value
 		header := link.addToHead(this.header)
 		this.updateHead(header)
@@ -125,11 +125,11 @@ func (this *LRUCache) Put(key int, value int) {
 	}
 
 	old := this.kvMap[this.header.before.key]
-	delete(this.kvMap, this.header.before.key)
+	this.kvMap[old.key] = nil
 
 	//reuse this old link
-	old.key,old.value=key,value
-	if this.header==this.header.before{
+	old.key, old.value = key, value
+	if this.header == this.header.before {
 		this.kvMap[key] = old
 		return
 	}
