@@ -124,18 +124,19 @@ func (this *LRUCache) Put(key int, value int) {
 		return
 	}
 
+	old := this.kvMap[this.header.before.key]
 	delete(this.kvMap, this.header.before.key)
-	link := &Link{value: value, key: key}
+
+	//reuse this old link
+	old.key,old.value=key,value
 	if this.header==this.header.before{
-		link.before, link.after = link, link
-		this.updateHead(link)
-		this.kvMap[key] = link
+		this.kvMap[key] = old
 		return
 	}
-	this.header.before.suicide()
-	link.addBefore(this.header)
-	this.updateHead(link)
-	this.kvMap[key] = link
+	old.suicide()
+	old.addBefore(this.header)
+	this.updateHead(old)
+	this.kvMap[key] = old
 	return
 
 }
